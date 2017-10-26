@@ -1,0 +1,4 @@
+jdk: [ oraclejdk8 ]
+before_install:
+  - mvn io.takari.polyglot:polyglot-translate-plugin:translate \
+      -Dinput=pom.yml -output=pom.xml

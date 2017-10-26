@@ -1,0 +1,87 @@
+modelVersion: 4.0.0
+
+parent:
+  groupId:    nz.co.aetheric.maven
+  artifactId: maven-parent-global
+  version:    1.1.0
+
+groupId:    nz.co.aetheric
+artifactId: fumbler
+version:    0.1.0-SNAPSHOT
+
+name:        Fumbler
+description: 
+url:         https://www.aetheric.co.nz/fumbler
+
+dependencies:
+
+  # <editor-fold name="dependencies: compile">
+
+  - $kotlin { groupId: org.jetbrains.kotlin, artifactId: kotlin-stdlib, version: 1.1.51 }
+  - $slf4j  { groupId: org.slf4j,            artifactId: slf4j-api,     version: 1.7.25 }
+
+  # </editor-fold>
+  # <editor-fold name="dependencies: test">
+
+  - $testkt { <<: *kotlin, scope: test, artifactId: kotlin-test-junit, exclusions: [ { groupId: junit, artifactId: junit } ] }
+  -         { <<: *testkt, artifactId: kotlin-reflect }
+
+  - { <<: [ *slf4j, *testkt ],  artifactId: slf4j-log4j12 }
+
+  - { <<: *testkt, groupId: org.junit.jupiter, artifactId: junit-jupiter-engine, version: 5.0.1 }
+  - { <<: *testkt, groupId: com.winterbe,      artifactId: expekt,               version: 0.5.0 }
+  - { <<: *testkt, groupId: org.apache.bval,   artifactId: bval-jsr,             version: 1.1.2 }
+  - { <<: *testkt, groupId: org.mockito,       artifactId: mockito-core,         version: 2.8.9 }
+  - { <<: *testkt, groupId: com.nhaarman,      artifactId: mockito-kotlin-kt1.1, version: 1.5.0 }
+
+  # </editor-fold>
+
+build:
+  sourceDirectory:     ${project.basedir}/src/main/kotlin
+  testSourceDirectory: ${project.basedir}/src/test/kotlin
+
+  plugins:
+
+    # This disables the java compilation steps
+    - groupId:    org.apache.maven.plugins
+      artifactId: maven-compiler-plugin
+      version:    3.6.1
+      executions:
+        - { id: default-compile,     phase: none }
+        - { id: default-testCompile, phase: none }
+
+    # This compiles kotlin sources.
+    - <<: *kotlin
+      artifactId: kotlin-maven-plugin
+      executions:
+        - { id: compile,      phase: compile,      goals: [ compile ] }
+        - { id: test-compile, phase: test-compile, goals: [ test-compile ] }
+
+    - groupId:    org.apache.maven.plugins
+      artifactId: maven-surefire-plugin
+      version:    2.20.1
+      configuration:
+        includes: [ "**/Test*.*" ]
+
+    - groupId:    org.apache.maven.plugins
+      artifactId: maven-failsafe-plugin
+      version:    2.20.1
+      configuration:
+        includes: [ "**/ITest*.*" ]
+      executions:
+        - { id: default-test, phase: verify, goals: [ integration-test ] }
+
+    - groupId:    org.jetbrains.dokka
+      artifactId: dokka-maven-plugin
+      version:    0.9.15
+      configuration:
+        outFormat:   html
+        jdkVersion:  8
+        sourceLinks: [ { url: '${project.scm.url}', dir: '${project.sourceDirectory}' } ]
+        cacheRoot:   ${project.basedir}/src/site/dokka-cache
+        externalDocumentationLinks:
+          - url: 'http://docs.oracle.com/javase/8/docs/api/'
+          - url: 'https://kotlinlang.org/api/latest/jvm/stdlib/'
+      executions:
+        - { id: dokka-generate, phase: pre-site, goals: [ dokka ] }
+
