@@ -1,6 +1,6 @@
 package nz.co.aetheric.fumbler
 
-import java.util.*
+import java.util.ResourceBundle
 
 /**
  * TODO
@@ -8,8 +8,9 @@ import java.util.*
  * @param context TODO
  */
 data class MsgBuilder internal constructor(
+		private val bundle: ResourceBundle,
 		val key: String,
-		val context: Map<String, String>
+		val context: Map<String, String> = emptyMap()
 
 ) {
 
@@ -26,6 +27,7 @@ data class MsgBuilder internal constructor(
 		 * @param context The contextual data that needs to be injected.
 		 */
 		private operator fun get(
+			bundle: ResourceBundle,
 			key: String,
 			context: MutableMap<String, String> = mutableMapOf()
 
@@ -36,26 +38,28 @@ data class MsgBuilder internal constructor(
 			return Regex.fromLiteral(propertyRegex)
 					.findAll(message)
 					.map { it.value to it.groupValues.first() }
-					.map { it.first to ( context[it.second] ?: get(it.second).apply { context.put(it.second, this) } ) }
+					.map { it.first to ( context[it.second] ?: get(bundle, it.second).apply { context.put(it.second, this) } ) }
 					.fold(message) { msg, ( key, value ) -> msg.replace(key, value) }
 
 		}
 
 	}
 
-	fun key(key: String): Message
+	fun key(key: String): MsgBuilder
 			= this.copy(key = key)
 
-	fun put(key: String, value: String): Message
+	fun put(key: String, value: String): MsgBuilder
 			= this.copy(context = context + ( key to value ))
 
-	fun put(vararg context: Pair<String, String>): Message
+	fun put(vararg context: Pair<String, String>): MsgBuilder
 			= this.put(context.toMap())
 
-	fun put(context: Map<String, String>): Message
+	fun put(context: Map<String, String>): MsgBuilder
 			= this.copy(context = this.context + context)
 
-	fun build(): String = get(key, context.toMutableMap())
+	fun build(): String = get(bundle, key, context.toMutableMap())
+
+	
 
 }
 

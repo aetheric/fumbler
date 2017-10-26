@@ -1,7 +1,7 @@
 modelVersion: 4.0.0
 
 parent:
-  groupId:    nz.co.aetheric.maven
+  groupId:    nz.co.aetheric.parent
   artifactId: maven-parent-global
   version:    1.1.0
 
@@ -17,13 +17,13 @@ dependencies:
 
   # <editor-fold name="dependencies: compile">
 
-  - $kotlin { groupId: org.jetbrains.kotlin, artifactId: kotlin-stdlib, version: 1.1.51 }
-  - $slf4j  { groupId: org.slf4j,            artifactId: slf4j-api,     version: 1.7.25 }
+  - &kotlin { groupId: org.jetbrains.kotlin, artifactId: kotlin-stdlib, version: 1.1.51 }
+  - &slf4j  { groupId: org.slf4j,            artifactId: slf4j-api,     version: 1.7.25 }
 
   # </editor-fold>
   # <editor-fold name="dependencies: test">
 
-  - $testkt { <<: *kotlin, scope: test, artifactId: kotlin-test-junit, exclusions: [ { groupId: junit, artifactId: junit } ] }
+  - &testkt { <<: *kotlin, scope: test, artifactId: kotlin-test-junit, exclusions: [ { groupId: junit, artifactId: junit } ] }
   -         { <<: *testkt, artifactId: kotlin-reflect }
 
   - { <<: [ *slf4j, *testkt ],  artifactId: slf4j-log4j12 }

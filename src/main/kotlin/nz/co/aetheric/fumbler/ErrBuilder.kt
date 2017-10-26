@@ -1,7 +1,10 @@
 package nz.co.aetheric.fumbler
 
-data class ErrBuilder(
-		val message: Message,
+import java.util.ResourceBundle
+
+data class ErrBuilder internal constructor(
+		private val bundle: ResourceBundle,
+		val message: MsgBuilder,
 		val cause: Throwable? = null
 
 ) {
@@ -25,6 +28,6 @@ data class ErrBuilder(
 	fun put(context: Map<String, String>)
 			= this.copy(message = message.put(context))
 
-	fun build(): Nothing = throw RuntimeException(message, cause)
+	fun build(): Nothing = throw RuntimeException(message.build(), cause)
 
 }
