@@ -10,7 +10,7 @@ artifactId: fumbler
 version:    0.1.0-SNAPSHOT
 
 name:        Fumbler
-description: 
+description: 'A lightweight error/exception handling "framework" written in kotlin'
 url:         https://www.aetheric.co.nz/fumbler
 
 dependencies:
@@ -84,4 +84,13 @@ build:
           - url: 'https://kotlinlang.org/api/latest/jvm/stdlib/'
       executions:
         - { id: dokka-generate, phase: pre-site, goals: [ dokka ] }
+
+scm:
+  url:                 http://github.com/aetheric/fumbler
+  connection:          scm:git:git://github.com/aetheric/fumbler.git
+  developerConnection: scm:git:git@github.com:aetheric/fumbler.git
+  tag:                 master
+
+issueManagement:
+  url: ${project.scm.url}/issues
 

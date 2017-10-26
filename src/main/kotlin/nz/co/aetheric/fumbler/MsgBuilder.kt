@@ -59,7 +59,5 @@ data class MsgBuilder internal constructor(
 
 	fun build(): String = get(bundle, key, context.toMutableMap())
 
-	
-
 }
 

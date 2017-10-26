@@ -1,6 +1,6 @@
 # Fumbler
 
-TODO: description
+A lightweight error/exception handling "framework" written in kotlin
 
 ## Usage
 
